@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nossa História ❤️ — Gabriel &amp; Ana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --capa-rosa: #e8c4c0; --capa-champagne: #f0e0cc; --capa-creme: #faf3e8;
+  --capa-vinho: #8a3a4a; --capa-vinho-suave: #b56576;
+  --dourado: #c9a227; --dourado-escuro: #a07d1a;
+  --marfim: #f9f3e6; --marfim-2: #f1e8d4; --marfim-escuro: #e6dac0;
+  --tinta: #3a2a22; --tinta-suave: #6a5548; --vermelho-suave: #a04555;
+  --transicao: all 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: radial-gradient(ellipse at 50% 30%, #e8ddd0 0%, #d0c2b2 45%, #a8988a 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'EB Garamond', serif; color: var(--tinta);
+  position: relative; user-select: none; -webkit-user-select: none;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: repeating-linear-gradient(92deg, transparent 0, transparent 60px, rgba(255,255,255,0.06) 60px, rgba(255,255,255,0.06) 61px);
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: ''; position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 30%, rgba(100,80,60,0.15) 80%, rgba(60,40,30,0.3) 100%);
+  pointer-events: none; z-index: 1;
+}
+
+/* ===== PLAYER DE ÁUDIO (SUBSTITUI O YOUTUBE) ===== */
+#audioContainer {
+  position: fixed;
+  bottom: 70px; right: 18px;
+  width: 240px;
+  z-index: 3;
+  background: rgba(250,243,232,0.95);
+  border: 2px solid var(--dourado-escuro);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(60,40,30,0.5);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  opacity: 0.95;
+}
+#audioContainer:hover { opacity: 1; transform: scale(1.02); }
+#audioContainer.minimizado { width: 50px; height: 50px; padding: 5px; border-radius: 50%; overflow: hidden; }
+#audioContainer.minimizado .audio-info { display: none; }
+#audioContainer.minimizado .audio-controles { display: none; }
+#audioContainer.minimizado #btnMinimizarAudio { display: flex; }
+
+.audio-info { text-align: center; margin-bottom: 8px; }
+.audio-info .audio-titulo { font-family: 'Great Vibes', cursive; font-size: 1rem; color: var(--capa-vinho); }
+.audio-info .audio-status { font-size: 0.65rem; color: var(--tinta-suave); font-style: italic; }
+
+.audio-controles {
+  display: flex; align-items: center; gap: 8px; justify-content: center;
+}
+
+#btnPlayAudio {
+  background: linear-gradient(135deg, var(--capa-rosa), var(--capa-champagne));
+  border: 1.5px solid var(--dourado-escuro); color: var(--capa-vinho);
+  width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transicao); flex-shrink: 0;
+}
+#btnPlayAudio:hover { transform: scale(1.1); }
+#btnPlayAudio.tocando { background: linear-gradient(135deg, var(--capa-vinho-suave), var(--capa-vinho)); color: var(--capa-creme); }
+
+#volumeAudio {
+  width: 80px; accent-color: var(--dourado-escuro); cursor: pointer; height: 4px;
+}
+
+#btnMinimizarAudio {
+  display: none;
+  background: transparent; border: none; color: var(--capa-vinho);
+  font-size: 1.2rem; cursor: pointer; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+}
+
+/* Botão "Tocar música" principal */
+.btn-tocar-musica {
+  position: fixed; bottom: 18px; right: 18px; z-index: 9999;
+  background: linear-gradient(135deg, var(--capa-rosa), var(--capa-champagne));
+  border: 2px solid var(--dourado-escuro); color: var(--capa-vinho);
+  border-radius: 50px; padding: 13px 24px; font-family: 'EB Garamond', serif;
+  font-size: 1rem; letter-spacing: 1.2px; cursor: pointer; font-weight: 600;
+  box-shadow: 0 8px 30px rgba(60,40,30,0.4), 0 0 25px rgba(201,162,39,0.3);
+  display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;
+  animation: pulsarInstrucao 2.5s ease-in-out infinite;
+}
+.btn-tocar-musica:hover { transform: scale(1.05); box-shadow: 0 10px 40px rgba(60,40,30,0.5); }
+.btn-tocar-musica.tocando { animation: none; background: linear-gradient(135deg, var(--capa-vinho-suave), var(--capa-vinho)); color: var(--capa-creme); }
+.btn-tocar-musica i { font-size: 1.05rem; }
+
+.btn-fullscreen, .btn-config {
+  position: fixed; z-index: 9999; background: rgba(250,243,232,0.95);
+  border: 2px solid var(--dourado-escuro); color: var(--capa-vinho);
+  border-radius: 50%; width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; transition: var(--transicao);
+  box-shadow: 0 4px 15px rgba(60,40,30,0.2);
+}
+.btn-fullscreen { top: 18px; right: 18px; }
+.btn-config { top: 18px; left: 18px; }
+.btn-fullscreen:hover, .btn-config:hover { background: var(--capa-champagne); transform: scale(1.08); }
+
+.controles-livro {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 9000;
+  display: flex; align-items: center; gap: 22px;
+  background: rgba(250,243,232,0.98); backdrop-filter: blur(14px);
+  border: 2px solid rgba(160,125,26,0.55); border-radius: 50px; padding: 10px 26px;
+  box-shadow: 0 10px 40px rgba(60,40,30,0.35);
+  opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+}
+.controles-livro.visivel { opacity: 1; pointer-events: auto; }
+.btn-nav-circular {
+  background: linear-gradient(135deg, var(--capa-champagne), var(--capa-rosa));
+  border: 2px solid var(--dourado-escuro); color: var(--capa-vinho);
+  width: 46px; height: 46px; border-radius: 50%; cursor: pointer; font-size: 1rem;
+  transition: var(--transicao); display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(60,40,30,0.2);
+}
+.btn-nav-circular:hover:not(:disabled) { transform: scale(1.1); box-shadow: 0 5px 18px rgba(60,40,30,0.3); }
+.btn-nav-circular:disabled { opacity: 0.3; cursor: not-allowed; }
+.indicador-central {
+  font-family: 'Playfair Display', serif; color: var(--tinta-suave); font-size: 0.85rem;
+  letter-spacing: 2px; min-width: 100px; text-align: center; font-style: italic;
+}
+.indicador-central .atual { color: var(--capa-vinho); font-size: 1.05rem; font-weight: 600; }
+
+.palco { position: relative; z-index: 5; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; }
+#book { margin: 0 auto; position: relative; }
+.sombra-livro {
+  position: fixed; bottom: 5%; left: 50%; transform: translateX(-50%);
+  width: 70%; max-width: 800px; height: 40px;
+  background: radial-gradient(ellipse at center, rgba(60,40,30,0.5) 0%, transparent 70%);
+  filter: blur(15px); pointer-events: none; z-index: 2;
+}
+
+.page { background: var(--marfim); overflow: hidden; }
+.page-content {
+  width: 100%; height: 100%;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(201,162,39,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(139,111,74,0.05) 0%, transparent 50%),
+    linear-gradient(160deg, var(--marfim) 0%, var(--marfim-2) 60%, var(--marfim-escuro) 100%);
+  color: var(--tinta); padding: 34px 28px 42px 32px;
+  display: flex; flex-direction: column; overflow-y: auto; position: relative;
+  font-family: 'EB Garamond', serif; font-size: 0.92rem; line-height: 1.62;
+  text-align: justify; hyphens: auto;
+}
+.page-content::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(139,111,74,0.018) 3px, rgba(139,111,74,0.018) 4px);
+  pointer-events: none; opacity: 0.9;
+}
+.page-content > * { position: relative; z-index: 1; }
+.page-content::-webkit-scrollbar { width: 2px; }
+.page-content::-webkit-scrollbar-thumb { background: rgba(139,111,74,0.35); }
+.page:nth-child(odd) .page-content { box-shadow: inset 14px 0 28px -14px rgba(60,40,30,0.18); }
+.page:nth-child(even) .page-content { box-shadow: inset -14px 0 28px -14px rgba(60,40,30,0.18); }
+
+.capa-dura {
+  width: 100%; height: 100%; background-color: var(--capa-creme);
+  background-image:
+    linear-gradient(180deg, rgba(250,243,232,0.55) 0%, rgba(240,224,204,0.45) 35%, rgba(232,196,192,0.55) 70%, rgba(138,58,74,0.72) 100%),
+    var(--capa-foto-bg, none);
+  background-size: cover, cover; background-position: center, center; background-repeat: no-repeat, no-repeat;
+  color: var(--capa-vinho); display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start; padding: 30px 26px 24px;
+  position: relative; text-align: center; overflow: hidden;
+  box-shadow: inset 0 0 80px rgba(255,255,255,0.35);
+}
+.capa-dura::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(45deg, transparent 0, transparent 2px, rgba(255,255,255,0.06) 2px, rgba(255,255,255,0.06) 3px);
+  pointer-events: none;
+}
+.capa-dura::after {
+  content: ''; position: absolute; inset: 12px;
+  border: 2px solid rgba(201,162,39,0.75); border-radius: 3px; pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+}
+.capa-dura > * { position: relative; z-index: 2; }
+.capa-faixa-topo, .capa-titulo, .capa-subtitulo, .capa-nomes, .capa-data, .capa-frase, .capa-instrucao {
+  text-shadow: 0 1px 0 rgba(255,255,255,0.9), 0 2px 4px rgba(255,255,255,0.7), 0 3px 10px rgba(60,40,30,0.55), 0 1px 2px rgba(0,0,0,0.3);
+}
+.capa-faixa-topo { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; color: var(--capa-vinho); font-size: 0.65rem; letter-spacing: 3.5px; text-transform: uppercase; font-weight: 600; }
+.capa-faixa-topo .linha-fina { flex: 1; height: 1.5px; background: linear-gradient(90deg, transparent, var(--capa-vinho), transparent); max-width: 40px; }
+.capa-titulo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2.5rem; color: var(--capa-vinho); letter-spacing: 3px; line-height: 1.05; margin: 12px 0 6px; background: rgba(250,243,232,0.55); padding: 8px 18px; border-radius: 4px; backdrop-filter: blur(2px); box-shadow: 0 2px 12px rgba(60,40,30,0.15); }
+.capa-subtitulo { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.95rem; color: var(--capa-vinho); margin-bottom: 12px; line-height: 1.35; font-weight: 700; background: rgba(250,243,232,0.6); padding: 4px 14px; border-radius: 20px; backdrop-filter: blur(2px); }
+.capa-nomes { font-family: 'Great Vibes', cursive; font-size: 1.7rem; color: var(--capa-vinho); margin: 6px 0 10px; font-weight: 600; background: rgba(250,243,232,0.65); padding: 4px 20px; border-radius: 30px; backdrop-filter: blur(2px); box-shadow: 0 2px 12px rgba(60,40,30,0.15); }
+.capa-data { font-family: 'EB Garamond', serif; font-style: italic; color: var(--capa-vinho); font-size: 0.82rem; letter-spacing: 1.8px; margin: 4px 0; font-weight: 600; background: rgba(250,243,232,0.6); padding: 3px 14px; border-radius: 20px; }
+.capa-ornamento { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0; color: var(--capa-vinho); font-size: 1rem; }
+.capa-ornamento .linha { height: 1.5px; width: 40px; background: linear-gradient(90deg, transparent, var(--capa-vinho), transparent); }
+.capa-frase { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--capa-vinho); font-size: 0.88rem; line-height: 1.55; margin: 12px 0 8px; max-width: 270px; font-weight: 700; background: rgba(250,243,232,0.65); padding: 8px 16px; border-radius: 8px; backdrop-filter: blur(2px); box-shadow: 0 2px 12px rgba(60,40,30,0.15); }
+.capa-instrucao { font-family: 'EB Garamond', serif; font-size: 0.68rem; color: var(--capa-vinho); letter-spacing: 2.8px; text-transform: uppercase; margin-top: auto; animation: pulsarInstrucao 2.5s ease-in-out infinite; display: flex; align-items: center; gap: 6px; font-weight: 700; background: rgba(250,243,232,0.7); padding: 6px 16px; border-radius: 20px; backdrop-filter: blur(2px); }
+@keyframes pulsarInstrucao { 0%, 100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
+.capa-lombada { position: absolute; left: 0; top: 0; bottom: 0; width: 14px; background: linear-gradient(90deg, rgba(138,58,74,0.45) 0%, rgba(232,196,192,0.4) 40%, rgba(255,255,255,0.2) 60%, transparent 100%); pointer-events: none; z-index: 3; }
+
+.contracapa { width: 100%; height: 100%; background: radial-gradient(ellipse at 50% 15%, rgba(255,235,200,0.4) 0%, transparent 45%), linear-gradient(180deg, var(--capa-creme) 0%, var(--capa-champagne) 40%, var(--capa-rosa) 100%); color: var(--capa-vinho); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 34px 28px; position: relative; text-align: center; }
+.contracapa::before { content: ''; position: absolute; inset: 12px; border: 1.5px solid rgba(201,162,39,0.5); border-radius: 2px; pointer-events: none; }
+.contracapa .capa-lombada { left: auto; right: 0; background: linear-gradient(-90deg, rgba(138,58,74,0.35) 0%, rgba(232,196,192,0.4) 40%, rgba(255,255,255,0.15) 60%, transparent 100%); }
+.contracapa-titulo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.25rem; color: var(--capa-vinho); letter-spacing: 1.5px; margin-bottom: 6px; }
+.contracapa-sub { font-family: 'Great Vibes', cursive; font-size: 1.1rem; color: var(--capa-vinho-suave); margin-bottom: 16px; }
+.contracapa-sinopse { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.82rem; line-height: 1.55; color: var(--tinta); max-width: 280px; margin-bottom: 16px; }
+.contracapa-ornamento { color: var(--dourado-escuro); font-size: 0.85rem; letter-spacing: 6px; margin: 12px 0; }
+.contracapa-editora { font-family: 'EB Garamond', serif; font-size: 0.62rem; color: var(--capa-vinho-suave); letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
+.contracapa-selo { font-family: 'Great Vibes', cursive; font-size: 1.4rem; color: var(--capa-vinho); margin-top: 8px; }
+
+.folha-rosto { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px 0; }
+.folha-rosto .autor { font-size: 0.85rem; color: var(--tinta-suave); letter-spacing: 3px; text-transform: uppercase; font-style: italic; margin-bottom: 24px; }
+.folha-rosto .titulo-rosto { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 2rem; color: var(--tinta); line-height: 1.1; margin-bottom: 8px; }
+.folha-rosto .subtitulo-rosto { font-family: 'Great Vibes', cursive; font-size: 1.35rem; color: var(--vermelho-suave); margin-bottom: 24px; }
+.folha-rosto .editora { font-size: 0.72rem; color: var(--tinta-suave); letter-spacing: 4px; text-transform: uppercase; margin-top: 24px; }
+.folha-rosto .ornamento-rosto { font-size: 1rem; color: var(--dourado-escuro); letter-spacing: 8px; margin: 16px 0; }
+.dedicatoria { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 34px 18px; }
+.dedicatoria p { font-style: italic; font-size: 1rem; line-height: 1.75; color: var(--tinta-suave); max-width: 260px; outline: none; border-bottom: 1px dashed transparent; padding: 4px; }
+.dedicatoria .assinatura { font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: var(--vermelho-suave); margin-top: 26px; }
+.sumario { padding: 6px 0; }
+.sumario h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--tinta); text-align: center; margin-bottom: 18px; letter-spacing: 2px; }
+.sumario ul { list-style: none; padding: 0; }
+.sumario li { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.85rem; color: var(--tinta-suave); padding: 5px 0; border-bottom: 1px dotted rgba(139,111,74,0.3); }
+.sumario li .num-cap { font-family: 'Playfair Display', serif; color: var(--vermelho-suave); font-size: 0.72rem; min-width: 26px; }
+.sumario li .titulo-cap { flex: 1; padding: 0 6px; }
+.sumario li .pag-cap { font-size: 0.75rem; color: var(--dourado-escuro); font-style: italic; }
+.titulo-capitulo-texto { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.3rem; color: var(--tinta); text-align: center; margin: 4px 0 6px; line-height: 1.2; }
+.numero-capitulo-texto { font-size: 0.65rem; letter-spacing: 5px; text-transform: uppercase; color: var(--dourado-escuro); text-align: center; margin-bottom: 14px; }
+.capitular::first-letter { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 3em; float: left; line-height: 0.85; margin: 5px 7px 0 0; color: var(--vermelho-suave); }
+.page-content p { text-indent: 1.6em; margin-bottom: 0.35em; outline: none; border-bottom: 1px dashed transparent; padding: 2px 0; text-align: justify; }
+.page-content p:focus { border-bottom-color: var(--dourado-escuro); }
+.page-content p:first-of-type { text-indent: 0; }
+.citacao-romantica { font-style: italic; font-size: 0.92rem; color: var(--vermelho-suave); text-align: center; line-height: 1.55; margin: 16px 6px; padding: 10px 0; border-top: 1px solid rgba(139,111,74,0.25); border-bottom: 1px solid rgba(139,111,74,0.25); position: relative; }
+.citacao-romantica::before { content: '"'; font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--dourado-escuro); position: absolute; top: -6px; left: 50%; transform: translateX(-50%); background: var(--marfim); padding: 0 8px; line-height: 1; }
+.cabecalho-pagina { position: absolute; top: 14px; left: 34px; right: 26px; font-size: 0.58rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--tinta-suave); opacity: 0.5; text-align: center; border-bottom: 1px solid rgba(139,111,74,0.18); padding-bottom: 4px; pointer-events: none; }
+.numero-pagina { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: 0.72rem; color: var(--tinta-suave); opacity: 0.6; pointer-events: none; }
+.numero-pagina .ornamento-num { color: var(--dourado-escuro); margin: 0 6px; font-size: 0.6rem; }
+.foto-livro { display: block; width: 100%; max-width: 180px; margin: 12px auto 5px; border: 2px solid rgba(139,111,74,0.45); padding: 5px; background: var(--marfim); box-shadow: 0 3px 10px rgba(60,40,30,0.15); cursor: pointer; transform: rotate(-0.5deg); position: relative; transition: transform 0.3s, box-shadow 0.3s; touch-action: manipulation; }
+.foto-livro:hover { transform: rotate(0deg) scale(1.02); box-shadow: 0 5px 18px rgba(60,40,30,0.25); }
+.foto-livro img { width: 100%; display: block; pointer-events: none; }
+.foto-livro::after { content: '📷 tocar para trocar'; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); background: rgba(138,58,74,0.92); color: #fff; font-family: 'EB Garamond', serif; font-size: 0.6rem; letter-spacing: 1px; padding: 4px 11px; border-radius: 12px; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 3; box-shadow: 0 2px 8px rgba(0,0,0,0.3); font-weight: 600; }
+.foto-livro:hover::after { opacity: 1; }
+.foto-livro.trocando::after { content: '✓ foto trocada'; background: rgba(45,120,45,0.92); opacity: 1; }
+.legenda-foto { font-style: italic; font-size: 0.72rem; color: var(--tinta-suave); text-align: center; margin-bottom: 10px; outline: none; }
+.galeria-grade { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0; }
+.galeria-grade .foto-livro { margin: 0; max-width: none; }
+.contador-livro { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 16px 0; }
+.contador-livro .item { background: rgba(139,111,74,0.08); border: 1px solid rgba(139,111,74,0.3); border-radius: 5px; padding: 7px 10px; min-width: 52px; text-align: center; }
+.contador-livro .num { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--vermelho-suave); line-height: 1; }
+.contador-livro .lab { font-size: 0.55rem; color: var(--tinta-suave); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
+.contrato-pagina { display: flex; flex-direction: column; height: 100%; padding: 8px 0; position: relative; }
+.contrato-titulo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; color: var(--capa-vinho); text-align: center; letter-spacing: 1.5px; margin-bottom: 4px; }
+.contrato-sub { font-style: italic; font-size: 0.78rem; color: var(--tinta-suave); text-align: center; margin-bottom: 10px; }
+.contrato-corpo { font-size: 0.78rem; line-height: 1.55; color: var(--tinta); text-align: justify; background: rgba(232,196,192,0.15); border: 1px solid rgba(160,125,26,0.25); border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; flex: 1; overflow-y: auto; }
+.contrato-corpo p { text-indent: 1.2em; margin-bottom: 0.5em; }
+.contrato-clausula { font-size: 0.7rem; color: var(--tinta-suave); font-style: italic; text-align: center; margin: 6px 0; }
+.contrato-botoes { display: flex; gap: 10px; justify-content: center; margin-top: auto; padding-top: 8px; position: relative; min-height: 50px; }
+.contrato-btn { flex: 1; font-family: 'Playfair Display', serif; font-size: 0.85rem; letter-spacing: 1.5px; padding: 10px 12px; border-radius: 40px; cursor: pointer; transition: var(--transicao); border: 1.5px solid var(--dourado-escuro); position: relative; z-index: 5; }
+.contrato-btn.sim { background: linear-gradient(135deg, var(--capa-rosa), var(--capa-vinho-suave)); color: var(--capa-creme); box-shadow: 0 4px 15px rgba(138,58,74,0.3); }
+.contrato-btn.sim:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(138,58,74,0.5); }
+.contrato-btn.nao { background: rgba(250,243,232,0.95); color: var(--capa-vinho); position: relative; }
+.contrato-btn.nao:hover { background: var(--capa-champagne); }
+.modal-assinatura { position: fixed; inset: 0; background: rgba(30,20,15,0.96); z-index: 25000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(16px); overflow-y: auto; }
+.modal-assinatura.aberto { display: flex; }
+.assinatura-card { background: var(--capa-creme); border: 2px solid var(--dourado); border-radius: 12px; padding: 24px; max-width: 560px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.5); position: relative; max-height: 92vh; overflow-y: auto; }
+.assinatura-card h3 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; color: var(--capa-vinho); text-align: center; margin-bottom: 4px; letter-spacing: 1.5px; }
+.assinatura-card .sub { font-style: italic; font-size: 0.85rem; color: var(--tinta-suave); text-align: center; margin-bottom: 14px; }
+.assinatura-bloco-grande { background: rgba(255,255,255,0.5); border: 1px solid rgba(160,125,26,0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+.assinatura-bloco-grande .nome-titulo { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1rem; color: var(--capa-vinho); text-align: center; margin-bottom: 2px; }
+.assinatura-bloco-grande .nome-label { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dourado-escuro); text-align: center; margin-bottom: 6px; }
+.assinatura-canvas-wrap { border: 2px dashed rgba(160,125,26,0.6); border-radius: 8px; background: #fff; position: relative; margin-bottom: 6px; overflow: hidden; }
+.assinatura-canvas-wrap canvas { display: block; width: 100%; height: 110px; cursor: crosshair; touch-action: none; }
+.canvas-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(106,85,72,0.35); font-family: 'Great Vibes', cursive; font-size: 1.2rem; pointer-events: none; }
+.canvas-placeholder.oculto { display: none; }
+.assinatura-bloco-grande .btn-limpar-bloco { background: transparent; border: 1px solid rgba(160,125,26,0.4); color: var(--tinta-suave); font-family: 'EB Garamond', serif; font-size: 0.72rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; float: right; }
+.assinatura-bloco-grande .btn-limpar-bloco:hover { background: rgba(160,125,26,0.1); }
+.assinatura-acoes { display: flex; gap: 8px; margin-top: 10px; clear: both; }
+.assinatura-acoes button { flex: 1; font-family: 'EB Garamond', serif; font-size: 0.85rem; padding: 10px; border-radius: 6px; cursor: pointer; transition: var(--transicao); border: 1px solid var(--dourado-escuro); }
+.btn-confirmar-ass { background: linear-gradient(135deg, var(--capa-rosa), var(--capa-vinho-suave)); color: var(--capa-creme); }
+.btn-confirmar-ass:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(138,58,74,0.4); }
+.fechar-assinatura { position: absolute; top: 8px; right: 12px; background: none; border: none; color: var(--tinta-suave); font-size: 1.8rem; cursor: pointer; }
+.fechar-assinatura:hover { color: var(--capa-vinho); }
+.modal-documento { position: fixed; inset: 0; background: rgba(30,20,15,0.96); z-index: 26000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(16px); overflow-y: auto; }
+.modal-documento.aberto { display: flex; }
+.documento-virtual { background: var(--capa-creme); border: 3px double var(--dourado); border-radius: 4px; padding: 30px 28px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.6); position: relative; font-family: 'EB Garamond', serif; color: var(--tinta); }
+.documento-virtual::before { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(160,125,26,0.3); border-radius: 2px; pointer-events: none; }
+.doc-selo { text-align: center; color: var(--dourado-escuro); font-size: 0.75rem; letter-spacing: 6px; margin-bottom: 6px; }
+.doc-titulo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.6rem; color: var(--capa-vinho); text-align: center; letter-spacing: 2px; margin-bottom: 4px; }
+.doc-sub { font-family: 'Great Vibes', cursive; font-size: 1.15rem; color: var(--capa-vinho-suave); text-align: center; margin-bottom: 16px; }
+.doc-divisor { text-align: center; color: var(--dourado-escuro); letter-spacing: 8px; font-size: 0.9rem; margin: 12px 0; }
+.doc-corpo { font-size: 0.9rem; line-height: 1.65; text-align: justify; margin-bottom: 14px; }
+.doc-corpo p { text-indent: 1.5em; margin-bottom: 0.6em; }
+.doc-data-local { font-style: italic; font-size: 0.82rem; color: var(--tinta-suave); text-align: right; margin: 16px 0 20px; }
+.doc-assinaturas { display: flex; gap: 20px; margin-top: 20px; }
+.doc-assinatura-item { flex: 1; text-align: center; }
+.doc-assinatura-img { height: 70px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto 4px; }
+.doc-assinatura-linha { border-top: 1px solid var(--tinta); padding-top: 6px; margin-top: 50px; }
+.doc-assinatura-linha.com-img { margin-top: 0; }
+.doc-assinatura-nome { font-family: 'Playfair Display', serif; font-size: 0.85rem; color: var(--capa-vinho); font-weight: 600; }
+.doc-assinatura-label { font-size: 0.65rem; color: var(--tinta-suave); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
+.doc-rodape { text-align: center; font-size: 0.6rem; color: var(--tinta-suave); letter-spacing: 2px; text-transform: uppercase; margin-top: 24px; padding-top: 10px; border-top: 1px solid rgba(160,125,26,0.3); }
+.doc-fechar { display: block; margin: 20px auto 0; background: linear-gradient(135deg, var(--capa-rosa), var(--capa-vinho-suave)); color: var(--capa-creme); border: 1px solid var(--dourado-escuro); padding: 10px 24px; border-radius: 30px; font-family: 'EB Garamond', serif; font-size: 0.85rem; cursor: pointer; letter-spacing: 1px; transition: var(--transicao); }
+.doc-fechar:hover { transform: translateY(-1px); }
+.menu-config { position: fixed; top: 70px; left: 18px; background: rgba(250,243,232,0.98); backdrop-filter: blur(16px); border: 2px solid var(--dourado-escuro); border-radius: 12px; padding: 18px; width: 290px; display: none; box-shadow: 0 20px 50px rgba(60,40,30,0.4); z-index: 10000; }
+.menu-config.aberto { display: block; }
+.menu-config h3 { font-family: 'Playfair Display', serif; color: var(--capa-vinho); font-size: 0.95rem; margin-bottom: 14px; text-align: center; letter-spacing: 1px; border-bottom: 1px solid rgba(160,125,26,0.3); padding-bottom: 10px; }
+.menu-config .grupo { margin-bottom: 12px; }
+.menu-config label { display: block; font-size: 0.68rem; color: var(--tinta-suave); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; font-weight: 600; }
+.menu-config input[type="text"], .menu-config input[type="date"] { width: 100%; background: rgba(255,255,255,0.7); border: 1.5px solid rgba(160,125,26,0.4); border-radius: 7px; padding: 8px 12px; color: var(--tinta); font-family: 'EB Garamond', serif; font-size: 0.9rem; outline: none; }
+.menu-config input:focus { border-color: var(--dourado-escuro); background: #fff; }
+.menu-config .btn-acao { width: 100%; background: var(--capa-rosa); border: 1.5px solid var(--dourado-escuro); color: var(--capa-vinho); padding: 9px; border-radius: 7px; font-family: 'EB Garamond', serif; font-size: 0.85rem; cursor: pointer; margin-top: 8px; letter-spacing: 1px; font-weight: 600; transition: var(--transicao); }
+.menu-config .btn-acao:hover { background: var(--capa-vinho-suave); color: var(--capa-creme); transform: translateY(-1px); }
+.modal-foto { position: fixed; inset: 0; background: rgba(30,20,15,0.94); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(14px); }
+.modal-foto.aberto { display: flex; }
+.modal-foto img { max-width: 90vw; max-height: 85vh; border-radius: 4px; border: 3px solid var(--dourado); box-shadow: 0 0 80px rgba(201,162,39,0.4); }
+.fechar-modal { position: absolute; top: 20px; right: 30px; color: var(--capa-creme); font-size: 2.5rem; cursor: pointer; background: none; border: none; }
+.fechar-modal:hover { color: #fff; }
+@media (max-width: 640px) {
+  .page-content { padding: 26px 18px 34px 22px; font-size: 0.85rem; line-height: 1.55; }
+  .capa-titulo { font-size: 2rem; padding: 6px 12px; }
+  .capa-subtitulo { font-size: 0.82rem; }
+  .capa-frase { font-size: 0.78rem; padding: 6px 12px; }
+  .capa-nomes { font-size: 1.4rem; padding: 3px 14px; }
+  .folha-rosto .titulo-rosto { font-size: 1.6rem; }
+  .titulo-capitulo-texto { font-size: 1.1rem; }
+  .contador-livro .num { font-size: 1rem; }
+  .contador-livro .item { min-width: 44px; padding: 5px 7px; }
+  .controles-livro { padding: 8px 18px; gap: 14px; bottom: 12px; }
+  .btn-nav-circular { width: 40px; height: 40px; font-size: 0.9rem; }
+  .indicador-central { font-size: 0.75rem; min-width: 80px; }
+  .btn-tocar-musica { bottom: 72px; right: 12px; padding: 11px 18px; font-size: 0.9rem; }
+  .btn-fullscreen, .btn-config { width: 38px; height: 38px; font-size: 15px; }
+  #audioContainer { width: 180px; bottom: 130px; right: 12px; }
+  #audioContainer.minimizado { width: 50px; height: 50px; bottom: 130px; right: 12px; }
+  .contrato-titulo { font-size: 1rem; }
+  .contrato-corpo { font-size: 0.72rem; padding: 8px; }
+  .contrato-btn { font-size: 0.78rem; padding: 8px; }
+  .assinatura-card { padding: 18px; }
+  .documento-virtual { padding: 22px 18px; }
+  .doc-titulo { font-size: 1.3rem; }
+  .doc-corpo { font-size: 0.82rem; }
+  .doc-assinaturas { flex-direction: column; gap: 10px; }
+  .doc-assinatura-img { height: 55px; }
+}
+</style>
+</head>
+<body>
+
+<!-- PLAYER DE ÁUDIO (SUBSTITUI O YOUTUBE) -->
+<div id="audioContainer">
+  <div class="audio-info">
+    <div class="audio-titulo">Summertime Sadness</div>
+    <div class="audio-status" id="audioStatus">Toque para iniciar</div>
+  </div>
+  <div class="audio-controles">
+    <button id="btnPlayAudio" title="Play/Pause"><i class="fas fa-play"></i></button>
+    <input type="range" id="volumeAudio" min="0" max="100" value="40" title="Volume">
+    <button id="btnMinimizarAudio" title="Minimizar"><i class="fas fa-compress"></i></button>
+  </div>
+</div>
+
+<button class="btn-config" id="btnConfig" title="Personalizar"><i class="fas fa-feather-alt"></i></button>
+<div class="menu-config" id="menuConfig">
+  <h3>Personalização</h3>
+  <div class="grupo">
+    <label>Nome dele</label>
+    <input type="text" id="cfgNomeEle" placeholder="Gabriel" value="Gabriel">
+  </div>
+  <div class="grupo">
+    <label>Nome dela</label>
+    <input type="text" id="cfgNomeEla" placeholder="Ana" value="Ana">
+  </div>
+  <div class="grupo">
+    <label>Data em que começamos</label>
+    <input type="date" id="cfgDataInicio" value="2026-01-01">
+  </div>
+  <button class="btn-acao" id="btnSalvarConfig"><i class="fas fa-save"></i> Salvar</button>
+  <button class="btn-acao" id="btnResetar" style="background:transparent; border-color:rgba(160,125,26,0.25); color:var(--tinta-suave); font-size:0.75rem; margin-top:6px;"><i class="fas fa-undo"></i> Restaurar padrão</button>
+</div>
+
+<button class="btn-fullscreen" id="btnFullscreen" title="Tela cheia"><i class="fas fa-expand"></i></button>
+
+<button class="btn-tocar-musica" id="btnTocarMusica">
+  <i class="fas fa-music"></i>
+  <span id="btnTocarMusicaTexto">Tocar música</span>
+</button>
+
+<div class="controles-livro" id="controlesLivro">
+  <button class="btn-nav-circular" id="btnAnterior" title="Página anterior"><i class="fas fa-chevron-left"></i></button>
+  <div class="indicador-central">
+    <span class="atual" id="paginaAtualIndicador">1</span> / <span id="totalPaginasIndicador">29</span>
+  </div>
+  <button class="btn-nav-circular" id="btnProximo" title="Próxima página"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+<div class="sombra-livro"></div>
+
+<div class="palco">
+  <div id="book"></div>
+</div>
+
+<div class="modal-foto" id="modalFoto">
+  <button class="fechar-modal" id="fecharModal">&times;</button>
+  <img id="imagemModal" src="" alt="Foto ampliada">
+</div>
+
+<div class="modal-assinatura" id="modalAssinatura">
+  <div class="assinatura-card">
+    <button class="fechar-assinatura" id="fecharAssinatura">&times;</button>
+    <h3>Assinaturas do Contrato</h3>
+    <p class="sub">Cada um assina no seu próprio espaço</p>
+    <div class="assinatura-bloco-grande">
+      <div class="nome-titulo" id="assNomeGabriel">Gabriel</div>
+      <div class="nome-label">Assine aqui</div>
+      <div class="assinatura-canvas-wrap">
+        <canvas id="canvasGabriel"></canvas>
+        <div class="canvas-placeholder" id="placeholderGabriel">assine com o dedo ou mouse</div>
+      </div>
+      <button class="btn-limpar-bloco" data-canvas="canvasGabriel" data-placeholder="placeholderGabriel">Limpar</button>
+    </div>
+    <div class="assinatura-bloco-grande">
+      <div class="nome-titulo" id="assNomeAna">Ana</div>
+      <div class="nome-label">Assine aqui</div>
+      <div class="assinatura-canvas-wrap">
+        <canvas id="canvasAna"></canvas>
+        <div class="canvas-placeholder" id="placeholderAna">assine com o dedo ou mouse</div>
+      </div>
+      <button class="btn-limpar-bloco" data-canvas="canvasAna" data-placeholder="placeholderAna">Limpar</button>
+    </div>
+    <div class="assinatura-acoes">
+      <button class="btn-confirmar-ass" id="btnConfirmarAssinatura">
+        <i class="fas fa-check"></i> Confirmar assinaturas
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-documento" id="modalDocumento">
+  <div class="documento-virtual" id="documentoVirtual"></div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const SUA_FOTO_URL = 'https://i.imgur.com/DuF9fXW.jpeg';
+  if (SUA_FOTO_URL) {
+    document.documentElement.style.setProperty('--capa-foto-bg', 'url("' + SUA_FOTO_URL + '")');
+  }
+
+  const state = {
+    nomeEle: 'Gabriel', nomeEla: 'Ana', dataInicio: '2026-01-01',
+    paginaAtual: 0, assinaturaGabriel: null, assinaturaAna: null
+  };
+
+  function carregarEstado() {
+    try {
+      const saved = localStorage.getItem('nossaHistoria_v9');
+      if (saved) Object.assign(state, JSON.parse(saved));
+    } catch (e) {}
+  }
+  function salvarEstado() {
+    try { localStorage.setItem('nossaHistoria_v9', JSON.stringify(state)); } catch (e) {}
+  }
+
+  // ============ PLAYER DE ÁUDIO (HTML5) ============
+  // IMPORTANTE: Para funcionar no seu PC (file://), você precisa baixar o MP3
+  // e colocar o nome do arquivo aqui. O arquivo deve estar na mesma pasta do HTML.
+  const ARQUIVO_MUSICA = 'musica.mp3'; // <--- COLOQUE O NOME DO SEU ARQUIVO MP3 AQUI
+
+  const audio = new Audio(ARQUIVO_MUSICA);
+  audio.loop = true;
+  let musicaTocando = false;
+
+  const btnPlayAudio = document.getElementById('btnPlayAudio');
+  const volumeAudio = document.getElementById('volumeAudio');
+  const audioStatus = document.getElementById('audioStatus');
+  const btnTocarMusica = document.getElementById('btnTocarMusica');
+  const btnMinimizarAudio = document.getElementById('btnMinimizarAudio');
+  const audioContainer = document.getElementById('audioContainer');
+
+  audio.volume = parseInt(volumeAudio.value) / 100;
+
+  function atualizarBotoes() {
+    if (musicaTocando) {
+      btnPlayAudio.innerHTML = '<i class="fas fa-pause"></i>';
+      btnPlayAudio.classList.add('tocando');
+      btnTocarMusica.innerHTML = '<i class="fas fa-pause"></i><span>Pausar música</span>';
+      btnTocarMusica.classList.add('tocando');
+      audioStatus.textContent = 'Tocando...';
+    } else {
+      btnPlayAudio.innerHTML = '<i class="fas fa-play"></i>';
+      btnPlayAudio.classList.remove('tocando');
+      btnTocarMusica.innerHTML = '<i class="fas fa-music"></i><span>Tocar música</span>';
+      btnTocarMusica.classList.remove('tocando');
+      audioStatus.textContent = 'Toque para iniciar';
+    }
+  }
+
+  function alternarMusica() {
+    if (musicaTocando) {
+      audio.pause();
+      musicaTocando = false;
+    } else {
+      audio.play().then(function() {
+        musicaTocando = true;
+        atualizarBotoes();
+      }).catch(function(err) {
+        console.warn('Erro ao tocar áudio:', err);
+        audioStatus.textContent = 'Clique no play para tocar';
+      });
+    }
+    atualizarBotoes();
+  }
+
+  btnPlayAudio.addEventListener('click', function(e) { e.stopPropagation(); alternarMusica(); });
+  btnTocarMusica.addEventListener('click', function(e) { e.stopPropagation(); alternarMusica(); });
+  volumeAudio.addEventListener('input', function(e) { audio.volume = parseInt(e.target.value) / 100; });
+
+  let audioMinimizado = false;
+  btnMinimizarAudio.addEventListener('click', function(e) {
+    e.stopPropagation();
+    audioMinimizado = !audioMinimizado;
+    audioContainer.classList.toggle('minimizado', audioMinimizado);
+    btnMinimizarAudio.innerHTML = audioMinimizado ? '<i class="fas fa-expand"></i>' : '<i class="fas fa-compress"></i>';
+  });
+
+  // ============ FULLSCREEN ============
+  const btnFullscreen = document.getElementById('btnFullscreen');
+  btnFullscreen.addEventListener('click', function() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(function(){});
+      btnFullscreen.innerHTML = '<i class="fas fa-compress"></i>';
+    } else {
+      document.exitFullscreen().catch(function(){});
+      btnFullscreen.innerHTML = '<i class="fas fa-expand"></i>';
+    }
+  });
+
+  function placeholderFoto(texto, cor) {
+    cor = cor || '%23e8c4c0';
+    return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='" + cor + "'/%3E%3Ctext x='200' y='165' font-family='Georgia' font-size='70' fill='%238a3a4a' text-anchor='middle'%3E" + texto + "%3C/text%3E%3C/svg%3E";
+  }
+  const FOTO_FINAL = SUA_FOTO_URL || placeholderFoto('❤', '%23f0e0cc');
+
+  function paginaInterna(opcoes) {
+    const cabecalho = opcoes.cabecalho || '';
+    const numero = opcoes.numero || '';
+    const conteudo = opcoes.conteudo || '';
+    return (
+      '<div class="page-content">' +
+        (cabecalho ? '<div class="cabecalho-pagina">' + cabecalho + '</div>' : '') +
+        conteudo +
+        (numero ? '<div class="numero-pagina"><span class="ornamento-num">✦</span> ' + numero + ' <span class="ornamento-num">✦</span></div>' : '') +
+      '</div>'
+    );
+  }
+
+  function construirPaginas() {
+    const nomeEle = state.nomeEle;
+    const nomeEla = state.nomeEla;
+    const dataInicio = state.dataInicio;
+    const dataFormatada = dataInicio ? (function() {
+      const p = dataInicio.split('-');
+      return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : dataInicio;
+    })() : '[data]';
+
+    return [
+      { tipo: 'capa', html: '<div class="capa-dura">' +
+          '<div class="capa-lombada"></div>' +
+          '<div class="capa-faixa-topo"><span class="linha-fina"></span><span>✦ romance ✦</span><span class="linha-fina"></span></div>' +
+          '<h1 class="capa-titulo">NOSSA<br>HISTÓRIA</h1>' +
+          '<p class="capa-subtitulo">11 meses de amor, memórias e sonhos.</p>' +
+          '<div class="capa-nomes">' + nomeEle + ' &amp; ' + nomeEla + '</div>' +
+          '<div class="capa-data">Desde ' + dataFormatada + '</div>' +
+          '<div class="capa-ornamento"><span class="linha"></span><span>✿ ❤ ✿</span><span class="linha"></span></div>' +
+          '<p class="capa-frase">"Entre tantos caminhos, nossas vidas escolheram se encontrar."</p>' +
+          '<div class="capa-instrucao"><i class="fas fa-hand-pointer"></i> clique para abrir</div>' +
+        '</div>', densidade: 'hard' },
+      { tipo: 'interna', html: paginaInterna({ conteudo: '<div class="folha-rosto"><div class="autor">' + nomeEle + ' &amp; ' + nomeEla + '</div><div class="ornamento-rosto">✿ ❤ ✿</div><div class="titulo-rosto">Nossa História</div><div class="subtitulo-rosto">um romance de dois corações</div><div class="ornamento-rosto">✿ ❤ ✿</div><div class="editora">Edição do Coração</div></div>' }) },
+      { tipo: 'interna', html: paginaInterna({ conteudo: '<div class="dedicatoria"><p contenteditable="true" data-campo="dedicatoria">Para você, que transformou meus dias comuns em capítulos que eu quero reler para sempre.</p><div class="assinatura">Com amor.</div></div>' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Sumário', conteudo: '<div class="sumario"><h3>Sumário</h3><ul><li><span class="num-cap">I</span><span class="titulo-cap">Onde tudo começou</span><span class="pag-cap">p. 5</span></li><li><span class="num-cap">II</span><span class="titulo-cap">Nossos primeiros momentos</span><span class="pag-cap">p. 7</span></li><li><span class="num-cap">III</span><span class="titulo-cap">Quando nasceu o amor</span><span class="pag-cap">p. 9</span></li><li><span class="num-cap">IV</span><span class="titulo-cap">Nossas lembranças</span><span class="pag-cap">p. 11</span></li><li><span class="num-cap">V</span><span class="titulo-cap">Nossos desafios</span><span class="pag-cap">p. 14</span></li><li><span class="num-cap">VI</span><span class="titulo-cap">11 meses de nós</span><span class="pag-cap">p. 16</span></li><li><span class="num-cap">VII</span><span class="titulo-cap">Os sonhos que queremos realizar</span><span class="pag-cap">p. 18</span></li><li><span class="num-cap">—</span><span class="titulo-cap">Cartas de amor</span><span class="pag-cap">p. 21</span></li><li><span class="num-cap">—</span><span class="titulo-cap">Contrato de Amor</span><span class="pag-cap">p. 27</span></li></ul></div>', numero: '4' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Introdução', conteudo: '<div class="numero-capitulo-texto">Introdução</div><p contenteditable="true" class="capitular" data-campo="intro">Este livro não é sobre um amor perfeito. É sobre um amor real — feito de escolhas, de conversas até tarde, de silêncios compreendidos e de recomeços. Cada página foi pensada para guardar o que vivemos e o que ainda vamos viver.</p><p contenteditable="true" data-campo="intro2">Que estas palavras sejam um abraço em forma de papel. E que, ao folhear estas páginas, você sinta o mesmo que eu sinto ao lembrar de nós: gratidão.</p><div class="citacao-romantica">"Toda história de amor é uma história de coragem."</div>', numero: '5' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Capítulo I', conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div class="numero-capitulo-texto">Capítulo I</div><div class="titulo-capitulo-texto" style="font-size:1.55rem;">Onde tudo começou</div><div style="font-size:1rem;color:var(--dourado-escuro);letter-spacing:8px;margin:14px 0;">✿ ❤ ✿</div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);font-size:0.88rem;max-width:240px;" data-campo="cap1-abertura">Toda grande história começa com um pequeno acaso.</p></div>', numero: '6' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Onde tudo começou', conteudo: '<p contenteditable="true" class="capitular" data-campo="cap1-texto">Tudo aconteceu na empresa Mercado Livre. Quando ela chegou perto de mim, colocou óleo no meu rosto e eu fiquei sem entender nada — até hoje dou risada só de lembrar. Depois, tomei coragem, sentei ao lado dela na janta e começamos a conversar. Foi aí que ela tentou roubar meu frango (risos). Desde então, começou uma amizade que, com o tempo, virou namoro.</p><p contenteditable="true" data-campo="cap1-texto2">Foi ali, no meio do dia a dia, que duas vidas se cruzaram e algo novo nasceu.</p><div class="citacao-romantica">"Entre tantos caminhos, o destino escolheu o nosso encontro."</div>', numero: '7' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Capítulo II', conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div class="numero-capitulo-texto">Capítulo II</div><div class="titulo-capitulo-texto" style="font-size:1.55rem;">Nossos primeiros momentos</div><div style="font-size:1rem;color:var(--dourado-escuro);letter-spacing:8px;margin:14px 0;">✿ ❤ ✿</div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);font-size:0.88rem;max-width:240px;" data-campo="cap2-abertura">Os primeiros encontros, os primeiros carinhos, as primeiras risadas.</p></div>', numero: '8' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Nossos primeiros momentos', conteudo: '<p contenteditable="true" class="capitular" data-campo="cap2-texto">Nosso primeiro momento juntos foi quando trocamos presentes: a Ana me deu uns presentes e eu também dei para ela. Aquele dia ficou guardado no coração. E o nosso primeiro rolê juntos foi no lugar favorito dela — um lugar que, desde então, virou especial para nós dois.</p><p contenteditable="true" data-campo="cap2-texto2">Os detalhes são o que tornam a história única. E os nossos detalhes são os meus favoritos.</p><div class="foto-livro" data-foto-id="foto_cap2"><img src="' + FOTO_FINAL + '" alt="Nossa foto"></div><div class="legenda-foto" contenteditable="true" data-campo="legenda-cap2">Nosso primeiro encontro</div>', numero: '9' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Capítulo III', conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div class="numero-capitulo-texto">Capítulo III</div><div class="titulo-capitulo-texto" style="font-size:1.55rem;">Quando nasceu o amor</div><div style="font-size:1rem;color:var(--dourado-escuro);letter-spacing:8px;margin:14px 0;">✿ ❤ ✿</div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);font-size:0.88rem;max-width:240px;" data-campo="cap3-abertura">O momento em que a amizade virou algo mais.</p></div>', numero: '10' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Quando nasceu o amor', conteudo: '<p contenteditable="true" class="capitular" data-campo="cap3-texto">Parecia que a gente já se conhecia antes de tudo. O amor não veio com um anúncio — ele simplesmente aconteceu, e a gente percebeu. Foi ficando, foi crescendo, foi tomando conta. Quando vi, já era amor.</p><p contenteditable="true" data-campo="cap3-texto2">Não foi um momento grandioso. Foi um conjunto de gestos simples que mostraram que ali havia algo verdadeiro.</p><div class="citacao-romantica">"O amor não se anuncia. Ele simplesmente acontece — e a gente percebe."</div>', numero: '11' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Capítulo IV', conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div class="numero-capitulo-texto">Capítulo IV</div><div class="titulo-capitulo-texto" style="font-size:1.55rem;">Nossas lembranças</div><div style="font-size:1rem;color:var(--dourado-escuro);letter-spacing:8px;margin:14px 0;">✿ ❤ ✿</div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);font-size:0.88rem;max-width:240px;" data-campo="cap4-abertura">Uma galeria de momentos que o coração guardou.</p></div>', numero: '12' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Nossas lembranças', conteudo: '<div class="galeria-grade"><div><div class="foto-livro" data-foto-id="foto_leg1"><img src="' + FOTO_FINAL + '" alt="L1"></div><div class="legenda-foto" contenteditable="true" data-campo="leg1">Primeira foto juntos</div></div><div><div class="foto-livro" data-foto-id="foto_leg2"><img src="' + FOTO_FINAL + '" alt="L2"></div><div class="legenda-foto" contenteditable="true" data-campo="leg2">Passeio inesquecível</div></div><div><div class="foto-livro" data-foto-id="foto_leg3"><img src="' + FOTO_FINAL + '" alt="L3"></div><div class="legenda-foto" contenteditable="true" data-campo="leg3">Momento especial</div></div><div><div class="foto-livro" data-foto-id="foto_leg4"><img src="' + FOTO_FINAL + '" alt="L4"></div><div class="legenda-foto" contenteditable="true" data-campo="leg4">Noite memorável</div></div></div>', numero: '13' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Nossas lembranças', conteudo: '<div class="galeria-grade"><div><div class="foto-livro" data-foto-id="foto_leg5"><img src="' + FOTO_FINAL + '" alt="L5"></div><div class="legenda-foto" contenteditable="true" data-campo="leg5">Aniversário juntos</div></div><div><div class="foto-livro" data-foto-id="foto_leg6"><img src="' + FOTO_FINAL + '" alt="L6"></div><div class="legenda-foto" contenteditable="true" data-campo="leg6">Nossa viagem</div></div><div><div class="foto-livro" data-foto-id="foto_leg7"><img src="' + FOTO_FINAL + '" alt="L7"></div><div class="legenda-foto" contenteditable="true" data-campo="leg7">Tarde de café</div></div><div><div class="foto-livro" data-foto-id="foto_leg8"><img src="' + FOTO_FINAL + '" alt="L8"></div><div class="legenda-foto" contenteditable="true" data-campo="leg8">Noite de cinema</div></div></div>', numero: '14' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Capítulo V', conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div class="numero-capitulo-texto">Capítulo V</div><div class="titulo-capitulo-texto" style="font-size:1.55rem;">Nossos desafios</div><div style="font-size:1rem;color:var(--dourado-escuro);letter-spacing:8px;margin:14px 0;">✿ ❤ ✿</div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);font-size:0.88rem;max-width:240px;" data-campo="cap5-abertura">Nenhum relacionamento é perfeito. O que importa é o que fazemos com os desafios.</p></div>', numero: '15' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Nossos desafios', conteudo: '<p contenteditable="true" class="capitular" data-campo="cap5-texto">Nossos desafios vieram quando a gente se viu diante da necessidade de mudança — tanta coisa precisava mudar, da minha parte e da parte dela também. Teve fase em que ficamos sem dinheiro, mas sempre demos um jeito de resolver juntos, ou de fazer algo juntos. E foi isso que nos fortaleceu.</p><p contenteditable="true" data-campo="cap5-texto2">Aprendemos que o amor também exige maturidade, conversa e respeito. E que crescer junto é uma escolha diária.</p><div class="citacao-romantica">"Amar é escolher ficar, mesmo quando seria mais fácil ir."</div>', numero: '16' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: '11 meses de nós', conteudo: '<div class="numero-capitulo-texto">Capítulo VI</div><div class="titulo-capitulo-texto">11 meses de nós dois</div><div class="contador-livro"><div class="item"><div class="num" id="contMeses">0</div><div class="lab">Meses</div></div><div class="item"><div class="num" id="contDias">0</div><div class="lab">Dias</div></div><div class="item"><div class="num" id="contHoras">0</div><div class="lab">Horas</div></div><div class="item"><div class="num" id="contMinutos">0</div><div class="lab">Minutos</div></div></div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);margin-top:10px;" data-campo="cap6-texto">Celebramos cada momento juntos. Obrigado(a) por estes 11 meses — e por todos os que ainda virão.</p>', numero: '17' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: '11 meses de nós', conteudo: '<p contenteditable="true" class="capitular" data-campo="cap6-declaracao">Eu te amo mais que tudo. Quero que você seja minha namorada e minha futura esposa até o fim da minha vida. Estes 11 meses foram só o começo de tudo o que ainda vamos viver juntos.</p><div class="citacao-romantica">"Onze meses parecem pouco para quem ama, e muito para quem esperou a vida inteira."</div>', numero: '18' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Capítulo VII', conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div class="numero-capitulo-texto">Capítulo VII</div><div class="titulo-capitulo-texto" style="font-size:1.55rem;">Os sonhos que queremos realizar</div><div style="font-size:1rem;color:var(--dourado-escuro);letter-spacing:8px;margin:14px 0;">✿ ❤ ✿</div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);font-size:0.88rem;max-width:240px;" data-campo="cap7-abertura">Crescer juntos, ter nossa família, nossa casa e viajar pelo mundo.</p></div>', numero: '19' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Os sonhos que queremos realizar', conteudo: '<p contenteditable="true" class="capitular" data-campo="cap7-texto">Nossos sonhos são crescer juntos, ter a nossa família, a nossa casa e, principalmente, viajar pelo mundo. Construir uma vida que seja nossa, do nosso jeito, com o nosso amor.</p><p contenteditable="true" data-campo="cap7-texto2">Sonhos não precisam ser grandiosos para serem especiais. Às vezes, o maior sonho é simplesmente continuar escolhendo um ao outro, todos os dias.</p><div class="citacao-romantica">"Sonhar juntos é transformar o futuro em um lugar que vale a pena esperar."</div>', numero: '20' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Cartas de amor', conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div class="numero-capitulo-texto">—</div><div class="titulo-capitulo-texto" style="font-size:1.55rem;">Cartas de amor</div><div style="font-size:1rem;color:var(--dourado-escuro);letter-spacing:8px;margin:14px 0;">✿ ❤ ✿</div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);font-size:0.88rem;max-width:240px;" data-campo="cartas-abertura">Palavras que merecem ser guardadas.</p></div>', numero: '21' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Carta I', conteudo: '<p contenteditable="true" class="capitular" data-campo="carta1">Meu amor, eu te amo mais que tudo. Quero que você seja minha namorada e minha futura esposa até o fim da minha vida. Obrigado por cada dia ao seu lado, por cada risada, por cada conversa. Você é a minha pessoa favorita no mundo.</p><p contenteditable="true" data-campo="carta1-fim" style="text-align:right;text-indent:0;margin-top:16px;font-style:italic;">Com todo o meu amor, seu para sempre.</p>', numero: '22' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Carta II', conteudo: '<p contenteditable="true" class="capitular" data-campo="carta2">Minha Ana, se eu pudesse voltar no tempo, escolheria você de novo. Escolheria cada risada, cada briga, cada recomeço. Porque, entre tantas possibilidades, a minha história favorita continua sendo aquela em que encontro você. Você é o meu lar, o meu abraço, o meu lugar seguro. Eu te amo hoje, amanhã e sempre.</p><p contenteditable="true" data-campo="carta2-fim" style="text-align:right;text-indent:0;margin-top:16px;font-style:italic;">Para sempre, eu.</p>', numero: '23' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Carta III', conteudo: '<p contenteditable="true" class="capitular" data-campo="carta3">Minha Ana, quando eu penso no futuro, é você que aparece. É a nossa casa, a nossa família, as nossas viagens, as nossas risadas. Você é o meu sonho mais bonito e a minha realidade mais doce. Eu prometo te amar, te respeitar e te escolher todos os dias — nos bons e nos maus momentos. Te amo mais do que tudo nesta vida.</p><p contenteditable="true" data-campo="carta3-fim" style="text-align:right;text-indent:0;margin-top:16px;font-style:italic;">Com carinho, hoje e sempre.</p>', numero: '24' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: '11 meses', conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div class="titulo-capitulo-texto" style="font-size:1.3rem;">11 meses de nós</div><div style="font-size:0.85rem;color:var(--dourado-escuro);letter-spacing:6px;margin:8px 0;">✿ ❤ ✿</div><div class="foto-livro" style="max-width:200px;transform:rotate(-1deg);" data-foto-id="foto_11meses"><img src="' + FOTO_FINAL + '" alt="11 meses"></div><div class="legenda-foto" contenteditable="true" data-campo="leg11meses">Nosso marco de 11 meses</div><p contenteditable="true" style="text-indent:0;text-align:center;font-style:italic;color:var(--tinta-suave);font-size:0.82rem;max-width:220px;margin-top:8px;" data-campo="cap6-foto-texto">Obrigado(a) por cada dia ao seu lado.</p></div>', numero: '25' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Encerramento', conteudo: '<div class="numero-capitulo-texto">—</div><div class="titulo-capitulo-texto">Encerramento</div><p contenteditable="true" class="capitular" data-campo="encerramento" style="margin-top:12px;">Este livro termina aqui, mas a nossa história continua. Que cada página virada seja um lembrete de que o amor se constrói todos os dias — com presença, com cuidado, com escolha.</p><div class="citacao-romantica" style="margin-top:20px;">"Se eu pudesse voltar no tempo, escolheria conhecer você novamente. Porque, entre tantas possibilidades, minha história favorita continua sendo aquela em que encontramos um ao outro."</div>', numero: '26' }) },
+      { tipo: 'interna', html: paginaInterna({ cabecalho: 'Contrato de Amor', conteudo: '<div class="contrato-pagina"><div class="contrato-titulo">CONTRATO DE AMOR</div><div class="contrato-sub">Prorrogação por tempo indeterminado</div><div class="contrato-corpo"><p>Pelo presente instrumento particular, as partes abaixo qualificadas:</p><p><strong>' + nomeEle + '</strong> e <strong>' + nomeEla + '</strong>, unidos pelo sentimento mais bonito que existe, resolvem firmar o presente contrato de amor, válido por <strong>tempo indeterminado</strong>, com as seguintes cláusulas:</p><p><strong>Cláusula 1ª.</strong> Amar, respeitar e escolher um ao outro todos os dias, nos bons e nos maus momentos.</p><p><strong>Cláusula 2ª.</strong> Rir juntos, chorar juntos, crescer juntos e nunca desistir do nós.</p><p><strong>Cláusula 3ª.</strong> Renovar esta promessa sempre que o coração pedir — e ele vai pedir todos os dias.</p><p style="text-align:center; margin-top:10px; font-style:italic;">Este contrato não tem prazo para acabar, porque o amor verdadeiro não conhece fim.</p></div><div class="contrato-clausula">✦ aceita os termos? ✦</div><div class="contrato-botoes" id="contratoBotoes"><button class="contrato-btn sim" id="btnAceitarContrato">SIM, ACEITO</button><button class="contrato-btn nao" id="btnRecusarContrato">NÃO</button></div></div>', numero: '27' }) },
+      { tipo: 'interna', html: paginaInterna({ conteudo: '<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;"><div style="font-size:1.2rem;color:var(--dourado-escuro);letter-spacing:10px;margin-bottom:16px;">✿ ❤ ✿</div><p style="text-indent:0;text-align:center;font-family:\'Great Vibes\',cursive;font-size:1.7rem;color:var(--vermelho-suave);line-height:1.3;">Com amor,<br>' + nomeEle + ' &amp; ' + nomeEla + '</p><div style="font-size:1rem;color:var(--dourado-escuro);letter-spacing:8px;margin-top:24px;">✿ ❤ ✿</div><p style="text-indent:0;text-align:center;font-size:0.72rem;color:var(--tinta-suave);margin-top:16px;letter-spacing:2px;font-style:italic;">Nossa História · Edição do Coração</p></div>' }) },
+      { tipo: 'contracapa', html: '<div class="contracapa"><div class="capa-lombada"></div><div class="contracapa-titulo">NOSSA HISTÓRIA</div><div class="contracapa-sub">11 meses de amor, memórias e sonhos.</div><div class="contracapa-sinopse">Entre tantos caminhos, duas vidas escolheram se encontrar. Este é o registro de um amor que se constrói todos os dias — com escolhas, cumplicidade e a promessa de continuar escrevendo, juntos, os próximos capítulos.</div><div class="contracapa-ornamento">✿ ❤ ✿</div><p class="contracapa-sinopse" style="font-size:0.75rem;margin-top:4px;">"Algumas histórias não precisam ser perfeitas, apenas verdadeiras."</p><div class="contracapa-selo">Com amor</div><div class="contracapa-editora">Edição do Coração</div></div>', densidade: 'hard' }
+    ];
+  }
+
+  let pageFlip = null;
+
+  function renderizarLivro() {
+    const bookEl = document.getElementById('book');
+    bookEl.innerHTML = '';
+    const definicoes = construirPaginas();
+
+    definicoes.forEach(function(def, index) {
+      const pageDiv = document.createElement('div');
+      pageDiv.className = 'page';
+      pageDiv.setAttribute('data-density', def.densidade || 'soft');
+      pageDiv.setAttribute('data-page-index', index);
+      pageDiv.innerHTML = def.html;
+      bookEl.appendChild(pageDiv);
+    });
+
+    document.getElementById('totalPaginasIndicador').textContent = definicoes.length;
+
+    if (pageFlip) { try { pageFlip.destroy(); } catch (e) {} }
+
+    const isMobile = window.innerWidth < 700;
+    const pageW = isMobile ? Math.min(window.innerWidth * 0.88, 340) : 380;
+    const pageH = Math.round(pageW * 1.43);
+
+    pageFlip = new St.PageFlip(bookEl, {
+      width: pageW, height: pageH,
+      size: 'fixed', minWidth: 280, maxWidth: 420,
+      minHeight: 400, maxHeight: 620,
+      drawShadow: true, flippingTime: 900,
+      usePortrait: true, startZIndex: 0,
+      autoSize: false, maxShadowOpacity: 0.5,
+      showCover: false, mobileScrollSupport: false,
+      swipeDistance: 30, clickEventForward: true,
+      useMouseEvents: true, disableFlipByClick: false,
+      startPage: state.paginaAtual || 0
+    });
+
+    pageFlip.loadFromHTML(document.querySelectorAll('#book .page'));
+
+    pageFlip.on('flip', function(e) {
+      const pagina = e.data;
+      state.paginaAtual = pagina;
+      salvarEstado();
+      atualizarIndicador(pagina);
+      if (pagina >= 16 && pagina <= 18) atualizarContador();
+      if (pagina === 26) prepararBotaoFugitivo();
+      setTimeout(configurarUploadsDeFoto, 200);
+    });
+
+    setTimeout(function() {
+      try {
+        const idx = pageFlip.getCurrentPageIndex();
+        state.paginaAtual = idx;
+        atualizarIndicador(idx);
+        if (idx === 26) prepararBotaoFugitivo();
+      } catch (e) {}
+      configurarUploadsDeFoto();
+    }, 400);
+  }
+
+  function atualizarIndicador(idx) {
+    const total = document.querySelectorAll('#book .page').length;
+    document.getElementById('paginaAtualIndicador').textContent = Math.min(idx + 1, total);
+    document.getElementById('totalPaginasIndicador').textContent = total;
+    document.getElementById('btnAnterior').disabled = idx <= 0;
+    document.getElementById('btnProximo').disabled = idx >= total - 1;
+    document.getElementById('controlesLivro').classList.add('visivel');
+    if (idx >= 16 && idx <= 18) atualizarContador();
+  }
+
+  // ============ UPLOAD DE FOTOS ============
+  function configurarUploadsDeFoto() {
+    document.querySelectorAll('.foto-livro[data-foto-id]').forEach(function(moldura) {
+      if (moldura.dataset.uploadConfigurado === 'true') return;
+      moldura.dataset.uploadConfigurado = 'true';
+      const fotoId = moldura.getAttribute('data-foto-id');
+
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.setAttribute('capture', 'environment');
+      input.style.position = 'fixed';
+      input.style.left = '-9999px';
+      input.style.width = '1px';
+      input.style.height = '1px';
+      document.body.appendChild(input);
+
+      try {
+        const salva = localStorage.getItem('nossaHistoria_v9_' + fotoId);
+        if (salva) {
+          const img = moldura.querySelector('img');
+          if (img) img.src = salva;
+        }
+      } catch (e) {}
+
+      moldura.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        input.value = '';
+        input.click();
+        return false;
+      }, true);
+
+      moldura.addEventListener('touchstart', function(e) {
+        e.stopPropagation();
+      }, true);
+
+      input.addEventListener('change', function(e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          const dataUrl = ev.target.result;
+          const img = moldura.querySelector('img');
+          if (img) img.src = dataUrl;
+          try {
+            localStorage.setItem('nossaHistoria_v9_' + fotoId, dataUrl);
+            moldura.classList.add('trocando');
+            setTimeout(function() { moldura.classList.remove('trocando'); }, 1500);
+          } catch (err) {
+            console.warn('Não foi possível salvar a foto (espaço cheio).');
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  }
+
+  // ============ CONTADOR ============
+  function atualizarContador() {
+    const elMeses = document.getElementById('contMeses');
+    const elDias = document.getElementById('contDias');
+    const elHoras = document.getElementById('contHoras');
+    const elMinutos = document.getElementById('contMinutos');
+    if (!elMeses) return;
+    const dataStr = state.dataInicio;
+    if (!dataStr) return;
+    const inicio = new Date(dataStr + 'T00:00:00');
+    const agora = new Date();
+    if (isNaN(inicio.getTime())) return;
+
+    let anos = agora.getFullYear() - inicio.getFullYear();
+    let meses = agora.getMonth() - inicio.getMonth();
+    let dias = agora.getDate() - inicio.getDate();
+    let horas = agora.getHours() - inicio.getHours();
+    let minutos = agora.getMinutes() - inicio.getMinutes();
+
+    if (minutos < 0) { minutos += 60; horas--; }
+    if (horas < 0) { horas += 24; dias--; }
+    if (dias < 0) {
+      const ultimoDia = new Date(agora.getFullYear(), agora.getMonth(), 0).getDate();
+      dias += ultimoDia; meses--;
+    }
+    if (meses < 0) { meses += 12; anos--; }
+    if (agora < inicio) { anos = meses = dias = horas = minutos = 0; }
+
+    const totalMeses = anos * 12 + meses;
+    elMeses.textContent = Math.max(0, totalMeses);
+    elDias.textContent = Math.max(0, dias);
+    elHoras.textContent = Math.max(0, horas);
+    elMinutos.textContent = Math.max(0, minutos);
+  }
+
+  setInterval(function() {
+    if (state.paginaAtual >= 16 && state.paginaAtual <= 18) atualizarContador();
+  }, 60000);
+
+  // ============ BOTÃO "NÃO" FUGITIVO ============
+  let botaoFugitivoPreparado = false;
+
+  function prepararBotaoFugitivo() {
+    if (botaoFugitivoPreparado) return;
+    setTimeout(function() {
+      const btnNao = document.getElementById('btnRecusarContrato');
+      const btnSim = document.getElementById('btnAceitarContrato');
+      if (!btnNao || !btnSim) {
+        botaoFugitivoPreparado = false;
+        setTimeout(prepararBotaoFugitivo, 500);
+        return;
+      }
+      if (btnNao.dataset.preparado === 'true') return;
+      btnNao.dataset.preparado = 'true';
+      botaoFugitivoPreparado = true;
+
+      let fugindo = false;
+      function fugir(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        if (fugindo) return;
+        fugindo = true;
+        const rect = btnNao.getBoundingClientRect();
+        btnNao.style.position = 'fixed';
+        btnNao.style.zIndex = '50000';
+        btnNao.style.transition = 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        btnNao.style.left = rect.left + 'px';
+        btnNao.style.top = rect.top + 'px';
+        btnNao.style.width = rect.width + 'px';
+        btnNao.style.height = rect.height + 'px';
+        const maxX = window.innerWidth - rect.width - 30;
+        const maxY = window.innerHeight - rect.height - 30;
+        btnNao.style.left = Math.max(30, Math.random() * maxX) + 'px';
+        btnNao.style.top = Math.max(30, Math.random() * maxY) + 'px';
+        const frases = ['Ops! 😅', 'Tenta de novo!', 'Nem pensar!', 'Fujão! 🏃', 'Não dá!', 'Haha!'];
+        btnNao.textContent = frases[Math.floor(Math.random() * frases.length)];
+        setTimeout(function() { fugindo = false; }, 200);
+      }
+
+      btnNao.addEventListener('mouseenter', fugir);
+      btnNao.addEventListener('click', fugir);
+      btnNao.addEventListener('touchstart', fugir, { passive: false });
+      document.addEventListener('mousemove', function(e) {
+        if (btnNao.style.position !== 'fixed') return;
+        const r = btnNao.getBoundingClientRect();
+        if (r.width === 0) return;
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const dist = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
+        if (dist < 90) fugir(e);
+      });
+
+      if (btnSim.dataset.preparado !== 'true') {
+        btnSim.dataset.preparado = 'true';
+        btnSim.addEventListener('click', function(e) {
+          e.preventDefault();
+          abrirModalAssinatura();
+        });
+      }
+    }, 300);
+  }
+
+  // ============ MODAL DE ASSINATURA ============
+  const modalAssinatura = document.getElementById('modalAssinatura');
+  const canvasGabriel = document.getElementById('canvasGabriel');
+  const canvasAna = document.getElementById('canvasAna');
+  const placeholderGabriel = document.getElementById('placeholderGabriel');
+  const placeholderAna = document.getElementById('placeholderAna');
+  const btnConfirmarAssinatura = document.getElementById('btnConfirmarAssinatura');
+  const fecharAssinatura = document.getElementById('fecharAssinatura');
+  const assNomeGabriel = document.getElementById('assNomeGabriel');
+  const assNomeAna = document.getElementById('assNomeAna');
+
+  let ctxGabriel = null, ctxAna = null;
+  let temTracoGabriel = false, temTracoAna = false;
+  let desenhandoGabriel = false, desenhandoAna = false;
+  let eventosCanvasConfigurados = false;
+
+  function configurarCanvas(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0) return null;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.strokeStyle = '#8a3a4a';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    return ctx;
+  }
+
+  function obterPosicao(e, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    let x, y;
+    if (e.touches && e.touches.length > 0) {
+      x = e.touches[0].clientX - rect.left;
+      y = e.touches[0].clientY - rect.top;
+    } else {
+      x = e.clientX - rect.left;
+      y = e.clientY - rect.top;
+    }
+    return { x: x, y: y };
+  }
+
+  function iniciarTraco(e, canvas, ctx, placeholder, quem) {
+    e.preventDefault();
+    if (!ctx) return;
+    if (quem === 'gabriel') desenhandoGabriel = true;
+    else desenhandoAna = true;
+    if (quem === 'gabriel') temTracoGabriel = true;
+    else temTracoAna = true;
+    placeholder.classList.add('oculto');
+    const pos = obterPosicao(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+  }
+
+  function desenharTraco(e, canvas, ctx, quem) {
+    const desenhando = quem === 'gabriel' ? desenhandoGabriel : desenhandoAna;
+    if (!desenhando || !ctx) return;
+    e.preventDefault();
+    const pos = obterPosicao(e, canvas);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  }
+
+  function finalizarTraco(e, quem) {
+    if (e) e.preventDefault();
+    if (quem === 'gabriel') desenhandoGabriel = false;
+    else desenhandoAna = false;
+  }
+
+  function configurarEventosCanvas() {
+    if (eventosCanvasConfigurados) return;
+    eventosCanvasConfigurados = true;
+
+    canvasGabriel.addEventListener('mousedown', function(e) { iniciarTraco(e, canvasGabriel, ctxGabriel, placeholderGabriel, 'gabriel'); });
+    canvasGabriel.addEventListener('mousemove', function(e) { desenharTraco(e, canvasGabriel, ctxGabriel, 'gabriel'); });
+    canvasGabriel.addEventListener('mouseup', function(e) { finalizarTraco(e, 'gabriel'); });
+    canvasGabriel.addEventListener('mouseleave', function(e) { finalizarTraco(e, 'gabriel'); });
+    canvasGabriel.addEventListener('touchstart', function(e) { iniciarTraco(e, canvasGabriel, ctxGabriel, placeholderGabriel, 'gabriel'); }, { passive: false });
+    canvasGabriel.addEventListener('touchmove', function(e) { desenharTraco(e, canvasGabriel, ctxGabriel, 'gabriel'); }, { passive: false });
+    canvasGabriel.addEventListener('touchend', function(e) { finalizarTraco(e, 'gabriel'); });
+
+    canvasAna.addEventListener('mousedown', function(e) { iniciarTraco(e, canvasAna, ctxAna, placeholderAna, 'ana'); });
+    canvasAna.addEventListener('mousemove', function(e) { desenharTraco(e, canvasAna, ctxAna, 'ana'); });
+    canvasAna.addEventListener('mouseup', function(e) { finalizarTraco(e, 'ana'); });
+    canvasAna.addEventListener('mouseleave', function(e) { finalizarTraco(e, 'ana'); });
+    canvasAna.addEventListener('touchstart', function(e) { iniciarTraco(e, canvasAna, ctxAna, placeholderAna, 'ana'); }, { passive: false });
+    canvasAna.addEventListener('touchmove', function(e) { desenharTraco(e, canvasAna, ctxAna, 'ana'); }, { passive: false });
+    canvasAna.addEventListener('touchend', function(e) { finalizarTraco(e, 'ana'); });
+
+    document.querySelectorAll('.btn-limpar-bloco').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const canvasId = btn.getAttribute('data-canvas');
+        const placeholderId = btn.getAttribute('data-placeholder');
+        const canvas = document.getElementById(canvasId);
+        const placeholder = document.getElementById(placeholderId);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        placeholder.classList.remove('oculto');
+        if (canvasId === 'canvasGabriel') temTracoGabriel = false;
+        else temTracoAna = false;
+      });
+    });
+  }
+
+  function abrirModalAssinatura() {
+    assNomeGabriel.textContent = state.nomeEle;
+    assNomeAna.textContent = state.nomeEla;
+    modalAssinatura.classList.add('aberto');
+    temTracoGabriel = false;
+    temTracoAna = false;
+    placeholderGabriel.classList.remove('oculto');
+    placeholderAna.classList.remove('oculto');
+
+    setTimeout(function() {
+      ctxGabriel = configurarCanvas(canvasGabriel);
+      ctxAna = configurarCanvas(canvasAna);
+      configurarEventosCanvas();
+      if (ctxGabriel) ctxGabriel.clearRect(0, 0, canvasGabriel.width, canvasGabriel.height);
+      if (ctxAna) ctxAna.clearRect(0, 0, canvasAna.width, canvasAna.height);
+    }, 150);
+  }
+
+  fecharAssinatura.addEventListener('click', function() {
+    modalAssinatura.classList.remove('aberto');
+  });
+
+  btnConfirmarAssinatura.addEventListener('click', function() {
+    if (!temTracoGabriel && !temTracoAna) { alert('Por favor, os dois precisam assinar antes de confirmar. ❤️'); return; }
+    if (!temTracoGabriel) { alert('Falta a assinatura de ' + state.nomeEle + '. ❤️'); return; }
+    if (!temTracoAna) { alert('Falta a assinatura de ' + state.nomeEla + '. ❤️'); return; }
+    try {
+      state.assinaturaGabriel = canvasGabriel.toDataURL('image/png');
+      state.assinaturaAna = canvasAna.toDataURL('image/png');
+      salvarEstado();
+    } catch (e) {}
+    modalAssinatura.classList.remove('aberto');
+    gerarDocumento();
+  });
+
+  // ============ DOCUMENTO ============
+  const modalDocumento = document.getElementById('modalDocumento');
+  const documentoVirtual = document.getElementById('documentoVirtual');
+
+  function gerarDocumento() {
+    const dataAtual = new Date();
+    const dataFormatada = dataAtual.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+    const horaFormatada = dataAtual.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const assGabriel = state.assinaturaGabriel || '';
+    const assAna = state.assinaturaAna || '';
+
+    const blocoAssinatura = function(nome, img) {
+      if (img) {
+        return '<img class="doc-assinatura-img" src="' + img + '" alt="Assinatura de ' + nome + '"><div class="doc-assinatura-linha com-img"></div><div class="doc-assinatura-nome">' + nome + '</div><div class="doc-assinatura-label">Assinatura</div>';
+      }
+      return '<div class="doc-assinatura-linha"></div><div class="doc-assinatura-nome">' + nome + '</div><div class="doc-assinatura-label">Assinatura</div>';
+    };
+
+    documentoVirtual.innerHTML =
+      '<div class="doc-selo">✦ ✦ ✦</div>' +
+      '<div class="doc-titulo">CONTRATO DE AMOR</div>' +
+      '<div class="doc-sub">Prorrogação por tempo indeterminado</div>' +
+      '<div class="doc-divisor">✿ ❤ ✿</div>' +
+      '<div class="doc-corpo">' +
+        '<p>Pelo presente instrumento particular, as partes abaixo qualificadas:</p>' +
+        '<p><strong>' + state.nomeEle + '</strong> e <strong>' + state.nomeEla + '</strong>, unidos pelo sentimento mais bonito que existe, resolvem firmar o presente contrato de amor, válido por <strong>tempo indeterminado</strong>, com as seguintes cláusulas:</p>' +
+        '<p><strong>Cláusula 1ª.</strong> Amar, respeitar e escolher um ao outro todos os dias, nos bons e nos maus momentos.</p>' +
+        '<p><strong>Cláusula 2ª.</strong> Rir juntos, chorar juntos, crescer juntos e nunca desistir do nós.</p>' +
+        '<p><strong>Cláusula 3ª.</strong> Renovar esta promessa sempre que o coração pedir — e ele vai pedir todos os dias.</p>' +
+        '<p>E, por estarem assim justos e comprometidos, assinam o presente instrumento, que tem validade eterna.</p>' +
+      '</div>' +
+      '<div class="doc-data-local">Assinado em ' + dataFormatada + ', às ' + horaFormatada + '.</div>' +
+      '<div class="doc-assinaturas">' +
+        '<div class="doc-assinatura-item">' + blocoAssinatura(state.nomeEle, assGabriel) + '</div>' +
+        '<div class="doc-assinatura-item">' + blocoAssinatura(state.nomeEla, assAna) + '</div>' +
+      '</div>' +
+      '<div class="doc-rodape">Documento gerado com amor · Nossa História · Edição do Coração</div>' +
+      '<button class="doc-fechar" id="btnFecharDocumento"><i class="fas fa-heart"></i> Fechar documento</button>';
+
+    modalDocumento.classList.add('aberto');
+    document.getElementById('btnFecharDocumento').addEventListener('click', function() {
+      modalDocumento.classList.remove('aberto');
+    });
+  }
+
+  // ============ MODAL FOTO ============
+  const modalFoto = document.getElementById('modalFoto');
+  const imagemModal = document.getElementById('imagemModal');
+  const fecharModal = document.getElementById('fecharModal');
+
+  window.abrirModalFoto = function(src) {
+    imagemModal.src = src;
+    modalFoto.classList.add('aberto');
+  };
+  fecharModal.addEventListener('click', function() { modalFoto.classList.remove('aberto'); });
+  modalFoto.addEventListener('click', function(e) { if (e.target === modalFoto) modalFoto.classList.remove('aberto'); });
+
+  // ============ NAVEGAÇÃO ============
+  document.getElementById('btnProximo').addEventListener('click', function() {
+    if (pageFlip) { try { pageFlip.flipNext(); } catch (e) {} }
+  });
+  document.getElementById('btnAnterior').addEventListener('click', function() {
+    if (pageFlip) { try { pageFlip.flipPrev(); } catch (e) {} }
+  });
+
+  // ============ CONFIG ============
+  const btnConfig = document.getElementById('btnConfig');
+  const menuConfig = document.getElementById('menuConfig');
+  const cfgNomeEle = document.getElementById('cfgNomeEle');
+  const cfgNomeEla = document.getElementById('cfgNomeEla');
+  const cfgDataInicio = document.getElementById('cfgDataInicio');
+  const btnSalvarConfig = document.getElementById('btnSalvarConfig');
+  const btnResetar = document.getElementById('btnResetar');
+
+  btnConfig.addEventListener('click', function(e) {
+    e.stopPropagation();
+    menuConfig.classList.toggle('aberto');
+    cfgNomeEle.value = state.nomeEle;
+    cfgNomeEla.value = state.nomeEla;
+    cfgDataInicio.value = state.dataInicio;
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!menuConfig.contains(e.target) && e.target !== btnConfig && !btnConfig.contains(e.target)) {
+      menuConfig.classList.remove('aberto');
+    }
+  });
+
+  btnSalvarConfig.addEventListener('click', function() {
+    state.nomeEle = cfgNomeEle.value.trim() || 'Gabriel';
+    state.nomeEla = cfgNomeEla.value.trim() || 'Ana';
+    state.dataInicio = cfgDataInicio.value || '2026-01-01';
+    salvarEstado();
+    const paginaSalva = state.paginaAtual;
+    renderizarLivro();
+    menuConfig.classList.remove('aberto');
+    setTimeout(function() {
+      if (pageFlip && paginaSalva) { try { pageFlip.turnToPage(paginaSalva); } catch (e) {} }
+    }, 500);
+  });
+
+  btnResetar.addEventListener('click', function() {
+    if (confirm('Restaurar todas as configurações padrão? (Isso também apaga as fotos enviadas)')) {
+      state.nomeEle = 'Gabriel';
+      state.nomeEla = 'Ana';
+      state.dataInicio = '2026-01-01';
+      state.paginaAtual = 0;
+      state.assinaturaGabriel = null;
+      state.assinaturaAna = null;
+      salvarEstado();
+      try {
+        Object.keys(localStorage).forEach(function(k) {
+          if (k.indexOf('nossaHistoria_v9_foto_') === 0) localStorage.removeItem(k);
+        });
+      } catch (e) {}
+      renderizarLivro();
+      menuConfig.classList.remove('aberto');
+    }
+  });
+
+  // ============ INIT ============
+  function init() {
+    carregarEstado();
+    renderizarLivro();
+
+    document.addEventListener('input', function(e) {
+      if (e.target.hasAttribute && e.target.hasAttribute('data-campo')) {
+        const campo = e.target.getAttribute('data-campo');
+        try { localStorage.setItem('nossaHistoria_v9_campo_' + campo, e.target.innerHTML); } catch (err) {}
+      }
+    });
+
+    setTimeout(function() {
+      document.querySelectorAll('[data-campo]').forEach(function(el) {
+        const campo = el.getAttribute('data-campo');
+        try {
+          const saved = localStorage.getItem('nossaHistoria_v9_campo_' + campo);
+          if (saved !== null) el.innerHTML = saved;
+        } catch (err) {}
+      });
+      configurarUploadsDeFoto();
+    }, 700);
+
+    setTimeout(atualizarContador, 1000);
+
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function() {
+        const paginaSalva = state.paginaAtual;
+        renderizarLivro();
+        setTimeout(function() {
+          if (pageFlip && paginaSalva) { try { pageFlip.turnToPage(paginaSalva); } catch (e) {} }
+        }, 400);
+      }, 400);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
